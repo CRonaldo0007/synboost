@@ -9,16 +9,16 @@ training_strategy:
   niter_decay: 0 # of iter to linearly decay learning rate to zero
   is_train: True
   class_weight: True
-  class_weight_cityscapes: False
+  class_weight_cityscapes: True
   image_visualization: False
 
 # model options
 model:
-  architecture: resnet18 #[options: 'vgg16', 'vgg16_bn', 'vgg16_guided', 'resnet18', 'vgg16_correlated']
+  architecture: vgg16 #[options: 'vgg16', 'vgg16_bn', 'vgg16_guided', 'resnet18', 'vgg16_correlated']
   semantic: True
   pretrained: True
   correlation: True
-  prior: True
+  prior: False
   spade: 'decoder' #[options: 'encoder', 'decoder', 'both', '']
   num_semantic_classes: 19 # Actual training labels
 diss_pretrained:
@@ -57,7 +57,7 @@ train_dataloader:
     aspect_ratio: 2
     flip: True
     normalize: True
-    void: False
+    void: True
     light_data: False
     num_semantic_classes: 19
     is_train: True
