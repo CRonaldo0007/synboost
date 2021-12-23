@@ -57,7 +57,7 @@ train_dataloader:
     aspect_ratio: 2
     flip: True
     normalize: True
-    void: True
+    void: False
     light_data: False
     num_semantic_classes: 19
     is_train: True
