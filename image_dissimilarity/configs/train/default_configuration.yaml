@@ -9,7 +9,7 @@ training_strategy:
   niter_decay: 0 # of iter to linearly decay learning rate to zero
   is_train: True
   class_weight: True
-  class_weight_cityscapes: True
+  class_weight_cityscapes: False
   image_visualization: False
 
 # model options
@@ -18,7 +18,7 @@ model:
   semantic: True
   pretrained: True
   correlation: True
-  prior: False
+  prior: True
   spade: 'decoder' #[options: 'encoder', 'decoder', 'both', '']
   num_semantic_classes: 19 # Actual training labels
 diss_pretrained:
@@ -51,7 +51,7 @@ optimizer:
 # parameters for dataloaders
 train_dataloader:
   dataset_args:
-    dataroot: /kaggle/input/synboostwo-data-generator/final_dataset/cityscapes_processed
+    dataroot: /kaggle/input/cityscapes-synboost/final_dataset/cityscapes_processed
     preprocess_mode: none
     crop_size: 512
     aspect_ratio: 2
@@ -67,7 +67,7 @@ train_dataloader:
     shuffle: True
 val_dataloader:
   dataset_args:
-    dataroot: /kaggle/input/synboostwo-data-generator/final_dataset/fs_lost_and_found
+    dataroot: /kaggle/input/cityscapes-synboost/final_dataset/fs_lost_and_found
     preprocess_mode: none
     crop_size: 512
     aspect_ratio: 2
@@ -82,7 +82,7 @@ val_dataloader:
     shuffle: False
 test_dataloader1:
   dataset_args:
-    dataroot: /kaggle/input/synboostwo-data-generator/final_dataset/road_anomaly
+    dataroot: /kaggle/input/cityscapes-synboost/final_dataset/road_anomaly
     preprocess_mode: none
     crop_size: 512
     aspect_ratio: 2
@@ -98,7 +98,7 @@ test_dataloader1:
     shuffle: False
 test_dataloader2:
   dataset_args:
-    dataroot: /kaggle/input/synboostwo-data-generator/final_dataset/fs_static
+    dataroot: /kaggle/input/cityscapes-synboost/final_dataset/fs_static
     preprocess_mode: none
     crop_size: 512
     aspect_ratio: 2
@@ -114,7 +114,7 @@ test_dataloader2:
     shuffle: False
 test_dataloader3:
   dataset_args:
-    dataroot: /kaggle/input/synboostwo-data-generator/final_dataset/fs_lost_and_found
+    dataroot: /kaggle/input/cityscapes-synboost/final_dataset/fs_lost_and_found
     preprocess_mode: none
     crop_size: 512
     aspect_ratio: 2
@@ -130,7 +130,7 @@ test_dataloader3:
     shuffle: False
 test_dataloader4:
   dataset_args:
-    dataroot: /kaggle/input/synboostwo-data-generator/final_dataset/fs_static
+    dataroot: /kaggle/input/cityscapes-synboost/final_dataset/fs_static
     preprocess_mode: none
     crop_size: 512
     aspect_ratio: 2
