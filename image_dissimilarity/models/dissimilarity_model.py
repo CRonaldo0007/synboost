@@ -183,7 +183,7 @@ class DissimNetPrior(nn.Module):
 
         if self.semantic:
             self.semantic_encoder = SemanticEncoder(architecture=architecture, in_channels=num_semantic_classes)
-            self.prior_encoder = SemanticEncoder(architecture=architecture, in_channels=2, base_feature_size=64)
+            self.prior_encoder = SemanticEncoder(architecture=architecture, in_channels=3, base_feature_size=64)
 
         # layers for decoder
         # all the 3x3 convolutions
@@ -246,7 +246,7 @@ class DissimNetPrior(nn.Module):
 
     def forward(self, original_img, synthesis_img, semantic_img, entropy, mae, distance, softmax_out=False):
         # get all the image encodings
-        prior_img = torch.cat((mae, distance), dim=1)
+        prior_img = torch.cat((entropy,mae, distance), dim=1)
         if self.spade == 'encoder' or self.spade == 'both':
             encoding_og = self.vgg_encoder(original_img, semantic_img)
             encoding_syn = self.vgg_encoder(synthesis_img, semantic_img)
