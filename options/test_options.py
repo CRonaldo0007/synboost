@@ -4,7 +4,7 @@ from .base_options import BaseOptions
 class TestOptions(BaseOptions):
     def initialize(self, parser):
         BaseOptions.initialize(self, parser)
-        parser.add_argument('--results_dir', type=str, default='./results/', help='saves results here.')
+        parser.add_argument('--results_dir', type=str, default='/kaggle/working/results', help='saves results here.')
         parser.add_argument('--which_epoch', type=str, default='latest', help='which epoch to load? set to latest to use latest cached model')
         parser.add_argument('--how_many', type=int, default=float("inf"), help='how many test images to run')
 
@@ -14,7 +14,7 @@ class TestOptions(BaseOptions):
         parser.add_argument('--no-segmentation', action='store_true', help='if specified, do *not* segment images since they are already created')
 
         # Segmentation
-        parser.add_argument('--snapshot', type=str, default='models/image-segmentation/cityscapes_best.pth',
+        parser.add_argument('--snapshot', type=str, default='/kaggle/input/sdcnet-cityscapes-segmentation/cityscapes_best (1).pth',
                             help='pre-trained Segmentation checkpoint', required=False)
         parser.add_argument('--arch', type=str, default='network.deepv3.DeepWV3Plus',
                             help='Network architecture used for Segmentation inference')
