@@ -56,7 +56,7 @@ def create_unknown_examples(instance_path, semantic_path, original_path, save_di
         instance_img = np.array(Image.open(instance))
         original_img = Image.open(original)
         
-        unique_classes = [sample for sample in np.unique(instance_img) if len(str(sample)) == 5]
+        unique_classes = [sample for sample in np.unique(instance_img) if sample == 0 or sample == 1 or sample == 4 or sample == 5 or sample == 6]
 
         how_many = int(random.random()*len(unique_classes))
 
@@ -131,7 +131,7 @@ def create_unknown_examples(instance_path, semantic_path, original_path, save_di
 
             # save images
             mask_img.save(os.path.join(save_dir, 'labels', new_label_name))
-            original_img.save(os.path.join(save_dir, 'original', new_original_name))
+            #original_img.save(os.path.join(save_dir, 'original', new_original_name))
             new_semantic_img.save(os.path.join(save_dir, 'semantic_labelId', new_semantic_name))
             new_semantic_train_img.save(os.path.join(save_dir, 'semantic', new_semantic_train_name))
 
@@ -187,10 +187,10 @@ def create_known_examples(instance_path, semantic_path, original_path, save_dir)
 
 
 if __name__ == '__main__':
-    instance_path = '/home/giancarlo/data/innosuisse/cityscapes/train/instances'
-    semantic_path = '/home/giancarlo/data/innosuisse/cityscapes/train/semantic'
-    original_path = '/home/giancarlo/data/innosuisse/cityscapes/train/original'
-    save_dir = '/home/giancarlo/data/innosuisse/optimized_only'
+    instance_path = '/kaggle/input/unknown-dataset/unknown_dataset/instances'
+    semantic_path = '/kaggle/input/unknown-dataset/unknown_dataset/labels'
+    original_path = '/kaggle/input/synboostwo-data-generator/final_dataset/cityscapes_processed/original'
+    save_dir = '/kaggle/working/results'
     
     create_unknown_examples(instance_path, semantic_path, original_path, save_dir, visualize=False)
     #create_known_examples(instance_path, semantic_path, original_path, save_dir)
