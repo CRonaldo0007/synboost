@@ -17,7 +17,7 @@ from util.load import load_ckp
 
 from util import trainer_util, metrics
 from util.iter_counter import IterationCounter
-from models.dissimilarity_model import DissimNet, DissimNetPrior
+from models.dissimilarity_model import DissimNet, DissimNetPrior, ResNetDissimNet, ResNetDissimNetPrior
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, help='Path to the config file.')
@@ -29,6 +29,7 @@ parser.add_argument('--wandb_run_id', type=str, default=None, help='Previous Run
 parser.add_argument('--wandb_run', type=str, default=None, help='Name of wandb run')
 parser.add_argument('--wandb_project', type=str, default="MLRC_Synboost", help='wandb project name')
 parser.add_argument('--wandb', type=bool, default=True, help='Log to wandb')
+parser.add_argument('--epoch', type=int, default=12, help='best epoch number in wandb')
 
 opts = parser.parse_args()
 cudnn.benchmark = True
@@ -50,6 +51,7 @@ def grid_search(model_num=4):
     d = {}
     w = [0, 1, 2, 3]
     best_score, best_roc, best_ap, best_weights = 1.0, 0, 0, None
+    best = -1
     # iterate all possible combinations (cartesian product)
     for weights in product(w, repeat=model_num):
         # skip if all weights are equal
@@ -64,8 +66,9 @@ def grid_search(model_num=4):
         # evaluate weights
         score_roc, score_ap, score_fp = evaluate_ensemble(weights)
         print('Weights: %s Score_FP: %.3f Score_ROC:%.3f Score_AP:%.3f' % (weights, score_fp, score_roc, score_ap))
-        if score_fp < best_score:
+        if score_ap - score_fp > best:
             best_score, best_weights, best_roc, best_ap = score_fp, weights, score_roc, score_ap
+            best = score_ap - score_fp
             print('>BEST SO FAR %s Score_FP: %.3f Score_ROC:%.3f Score_AP:%.3f' % (best_weights, best_score, best_roc, best_ap))
     return list(best_weights), best_score, best_roc, best_ap
 
@@ -153,10 +156,16 @@ if __name__ == '__main__':
     test_loader = trainer_util.get_dataloader(cfg_test_loader['dataset_args'], cfg_test_loader['dataloader_args'])
     
     # get model
-    if config['model']['prior']:
-        diss_model = DissimNetPrior(**config['model']).cuda()
-    elif 'vgg' in config['model']['architecture']:
-        diss_model = DissimNet(**config['model']).cuda()
+    if 'vgg' in config['model']['architecture']:
+        if config['model']['prior']:
+            diss_model = DissimNetPrior(**config['model']).cuda()
+        else:
+            diss_model = DissimNet(**config['model']).cuda()
+    elif 'resnet' in config['model']['architecture']:
+        if config['model']['prior']:
+            diss_model = ResNetDissimNetPrior(**config['model']).cuda()
+        else:
+            diss_model = ResNetDissimNet(**config['model']).cuda()
     else:
         raise NotImplementedError()
     
@@ -165,8 +174,8 @@ if __name__ == '__main__':
     wandb_utils.init_wandb(config=config, key=opts.wandb_Api_key,wandb_project= opts.wandb_project, wandb_run=opts.wandb_run, wandb_run_id=opts.wandb_run_id, wandb_resume=opts.wandb_resume)
     diss_model.eval()
     if use_wandb and wandb_resume:
-        checkpoint = load_ckp(config["wandb_config"]["model_path_base"], "best", 12)
-        diss_model.load_state_dict(checkpoint['state_dict'], strict=False)
+        checkpoint = load_ckp(config["wandb_config"]["model_path_base"], "best", opts.epoch)
+        diss_model.load_state_dict(checkpoint['state_dict'])
     
     softmax = torch.nn.Softmax(dim=1)
     best_weights, best_score, best_roc, best_ap = grid_search()
