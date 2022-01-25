@@ -8,7 +8,7 @@ ensemble: True
 
 # model options
 model:
-  architecture: vgg16 #[options: 'vgg16', 'vgg16_bn', 'vgg16_guided', 'resnet18', 'vgg16_correlated']
+  architecture: resnet18 #[options: 'vgg16', 'vgg16_bn', 'vgg16_guided', 'resnet18', 'vgg16_correlated']
   semantic: True
   pretrained: True
   correlation: True
